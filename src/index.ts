@@ -111,9 +111,9 @@ app.post('/login', async (req, res) => {
 		} else {
 			res.status(401).json({ success: false, message: 'ユーザーが見つかりません' });
 		}
-	} catch (error) {
+	} catch (error:any) {
 		console.log('error', error);
-		res.status(500).json({ success: false, message: 'サーバーエラー' });
+		res.status(500).json({ success: false, message: error.message });
 	}
 });
 
