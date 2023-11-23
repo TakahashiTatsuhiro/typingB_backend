@@ -119,6 +119,11 @@ app.post('/login', async (req, res) => {
 
 app.post('/logintest', async (req, res) => {
 	const { username, password } = req.body;
+	res.status(200).json({
+		success: true,
+		user: { username, password },
+		message: 'ログイン成功',
+	});
 	try {
 		const user = await knex('users').where({ username }).first();
 		if (user) {
