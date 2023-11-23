@@ -51,7 +51,7 @@ app.get('/set-token', (req, res)=>{
 // CORS（Cross-Origin Resource Sharing）の設定
 app.use(
 	cors({
-		origin: 'http://localhost:3000', // 本番環境では本番のフロントエンドのURLに変更
+		origin: process.env.FRONTEND_ORIGIN, // 本番環境では本番のフロントエンドのURLに変更
 		credentials: true, // クッキーを含むリクエストを許可
 	})
 );
