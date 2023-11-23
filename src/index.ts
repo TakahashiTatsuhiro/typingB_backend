@@ -12,7 +12,7 @@ import knexfile from '../knexfile';
 
 //express設定-------------------------------------------------------------
 const app = express();
-const port = 3001; //vite側を3000にするため
+const port = process.env.PORT;
 
 declare module 'express-session' {
 	interface SessionData {
