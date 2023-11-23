@@ -117,13 +117,8 @@ app.post('/login', async (req, res) => {
 	}
 });
 
-app.post('/logintest', async (req, res) => {
+app.post('/logintest1', async (req, res) => {
 	const { username, password } = req.body;
-	res.status(200).json({
-		success: true,
-		user: { username, password },
-		message: 'ログイン成功',
-	});
 	try {
 		const user = await knex('users').where({ username }).first();
 		if (user) {
@@ -132,18 +127,6 @@ app.post('/logintest', async (req, res) => {
 				user: { username: user.username, id: user.id },
 				message: 'ログイン成功',
 			});
-			// const hash = crypto.createHash('sha256');
-			// const hashedInputPass = hash.update(user.salt + password).digest('hex');
-
-			// if (hashedInputPass === user.hashedPass) {
-			// 	res.json({
-			// 		success: true,
-			// 		user: { username: user.username, id: user.id },
-			// 		message: 'ログイン成功',
-			// 	});
-			// } else {
-			// 	res.status(401).json({ success: false, message: 'ログイン失敗' });
-			// }
 		} else {
 			res.status(401).json({ success: false, message: 'ユーザーが見つかりません' });
 		}
@@ -151,6 +134,15 @@ app.post('/logintest', async (req, res) => {
 		console.log('error', error);
 		res.status(500).json({ success: false, message: error.message });
 	}
+});
+
+app.post('/logintest2', async (req, res) => {
+	const { username, password } = req.body;
+	res.status(200).json({
+		success: true,
+		user: { username, password },
+		message: 'ログイン成功',
+	});
 });
 
 //新規メンバー登録------------------------------------------------------------------
