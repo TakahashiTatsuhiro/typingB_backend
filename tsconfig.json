@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+
+    "outDir": "./dist", // コンパイルされたファイルの出力先ディレクトリ
+    "rootDir": "./", // outDirに対しroodDirのファイル構造をそのまま再現する。もし"./"なら、ルートフォルダの階層をそのままoutDirに再現する
+  },
+  "include": [
+    "src/**/*", // コンパイルするファイルの指定。もし"src/**/*" なら、src ディレクトリとそのサブディレクトリ内のすべてのファイルを意味する
+    "./knexfile.ts" //コンパイル対象に、ディレクトリ直下のknexfile.tsも追加する
+  ]
+}
