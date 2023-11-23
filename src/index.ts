@@ -37,16 +37,16 @@ app.use(
 			secure: process.env.NODE_ENV === 'production', // 本番環境ではtrueにする
 			httpOnly: true, // JavaScriptからのアクセスを防ぐ
 			maxAge: 24 * 60 * 60 * 1000, // クッキーの有効期限（例: 1日）
+			sameSite: 'none', // クロスオリジンの場合
 		},
 	})
 );
 // セッション(カスタム的？今回は使わない)
-app.get('/set-token', (req, res)=>{
+app.get('/set-token', (req, res) => {
 	const sessionToken = crypto.randomBytes(16).toString('hex');
-	res.cookie('token',sessionToken);
+	res.cookie('token', sessionToken);
 	res.status(200).send('cookie added');
-})
-
+});
 
 // CORS（Cross-Origin Resource Sharing）の設定
 app.use(
@@ -86,7 +86,8 @@ const knex = Knex(knexConfig);
 
 //ルート-------------------------------------------------------------------
 app.get('/', (req, res) => {
-	res.json({knexConfig});
+	// res.json({knexConfig});
+	res.status(200).send('サーバー側だよ');
 });
 
 //ログイン認証---------------------------------------------------------------
@@ -100,10 +101,16 @@ app.post('/login', async (req, res) => {
 
 			if (hashedInputPass === user.hashedPass) {
 				req.session.user = { id: user.id, username: user.username };
-				res.json({
-					success: true,
-					user: { username: user.username, id: user.id },
-					message: 'ログイン成功',
+				req.session.save((err) => {
+					if (err) {
+						console.log('Session save error:', err);
+						return res.status(500).json({ success: false, message: 'セッション保存エラー' });
+					}
+					res.json({
+						success: true,
+						user: { username: user.username, id: user.id },
+						message: 'ログイン成功',
+					});
 				});
 			} else {
 				res.status(401).json({ success: false, message: 'ログイン失敗' });
@@ -111,38 +118,10 @@ app.post('/login', async (req, res) => {
 		} else {
 			res.status(401).json({ success: false, message: 'ユーザーが見つかりません' });
 		}
-	} catch (error:any) {
+	} catch (error: any) {
 		console.log('error', error);
 		res.status(500).json({ success: false, message: error.message });
 	}
-});
-
-app.post('/logintest1', async (req, res) => {
-	const { username, password } = req.body;
-	try {
-		const user = await knex('users').where({ username }).first();
-		if (user) {
-			res.json({
-				success: true,
-				user: { username: user.username, id: user.id },
-				message: 'ログイン成功',
-			});
-		} else {
-			res.status(401).json({ success: false, message: 'ユーザーが見つかりません' });
-		}
-	} catch (error:any) {
-		console.log('error', error);
-		res.status(500).json({ success: false, message: error.message });
-	}
-});
-
-app.post('/logintest2', async (req, res) => {
-	const { username, password } = req.body;
-	res.status(200).json({
-		success: true,
-		user: { username, password },
-		message: 'ログイン成功',
-	});
 });
 
 //新規メンバー登録------------------------------------------------------------------
