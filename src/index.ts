@@ -204,6 +204,19 @@ app.get('/scores', checkAuthenticated, async (req, res) => {
 	}
 });
 
+//タイピング結果出力-----------------------------------------------------------
+app.get('/scorestest', async (req, res) => {
+	try {
+		const scores = await knex('results')
+			.join('users', 'users.id', '=', 'results.user_id')
+			.select('users.id as user_id', 'users.username', 'results.date', 'results.score');
+		res.status(200).json({ success: true, scores, message: '正常に完了' });
+	} catch (error) {
+		console.log('error', error);
+		res.status(500).json({ success: false, message: 'サーバーエラー' });
+	}
+});
+
 //リッスン--------------------------------------------------------------------
 app.listen(port, () => {
 	console.log(`Server running on http://localhost:${port}`);
